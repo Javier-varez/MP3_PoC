@@ -109,7 +109,7 @@ int main(void)
   MX_USB_HOST_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -191,7 +191,19 @@ void MX_USB_HOST_StateChanged(ApplicationTypeDef appState) {
 		printf("Idle state\n");
 	} else if (appState == APPLICATION_READY) {
 		printf("Ready state\n");
+	} else if (appState == APPLICATION_START) {
+		printf("Start state\n");
+	} else if (appState == APPLICATION_DISCONNECT) {
+		printf("Disconnected state\n");
+	} else {
+		printf("Unknown state\n");
 	}
+}
+
+int _write (int fd, const void *buf, size_t count) {
+	// Write to UART Here
+
+	return count;
 }
 
 /* USER CODE END 4 */
