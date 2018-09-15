@@ -87,7 +87,9 @@ static void USBH_UserProcess(USBH_HandleTypeDef *phost, uint8_t id);
  * -- Insert your external function declaration here --
  */
 /* USER CODE BEGIN 1 */
+__attribute__((weak)) void MX_USB_HOST_StateChanged(ApplicationTypeDef appState) {
 
+}
 /* USER CODE END 1 */
 
 /**
@@ -146,6 +148,7 @@ static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
   default:
   break;
   }
+  MX_USB_HOST_StateChanged(Appli_state);
   /* USER CODE END CALL_BACK_1 */
 }
 

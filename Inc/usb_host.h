@@ -101,6 +101,8 @@ void MX_USB_HOST_Init(void);
 
 void MX_USB_HOST_Process(void);
 
+void MX_USB_HOST_StateChanged(ApplicationTypeDef appState);
+
 /**
   * @}
   */

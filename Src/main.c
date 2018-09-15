@@ -54,7 +54,7 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "stm32f411e_discovery.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -185,6 +185,14 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void MX_USB_HOST_StateChanged(ApplicationTypeDef appState) {
+	if (appState == APPLICATION_IDLE) {
+		printf("Idle state\n");
+	} else if (appState == APPLICATION_READY) {
+		printf("Ready state\n");
+	}
+}
 
 /* USER CODE END 4 */
 
