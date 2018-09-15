@@ -55,6 +55,7 @@
 
 /* USER CODE BEGIN Includes */
 #include "stm32f411e_discovery.h"
+#include "uart.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -110,6 +111,9 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
+  uart_init();
+
+  printf("Holi!\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -188,21 +192,21 @@ void SystemClock_Config(void)
 
 void MX_USB_HOST_StateChanged(ApplicationTypeDef appState) {
 	if (appState == APPLICATION_IDLE) {
-		printf("Idle state\n");
+		printf("Idle state\r\n");
 	} else if (appState == APPLICATION_READY) {
-		printf("Ready state\n");
+		printf("Ready state\r\n");
 	} else if (appState == APPLICATION_START) {
-		printf("Start state\n");
+		printf("Start state\r\n");
 	} else if (appState == APPLICATION_DISCONNECT) {
-		printf("Disconnected state\n");
+		printf("Disconnected state\r\n");
 	} else {
-		printf("Unknown state\n");
+		printf("Unknown state\r\n");
 	}
 }
 
 int _write (int fd, const void *buf, size_t count) {
 	// Write to UART Here
-
+	uart_write(buf, count);
 	return count;
 }
 
