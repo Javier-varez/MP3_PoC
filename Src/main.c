@@ -62,7 +62,8 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+ApplicationTypeDef applicationState = APPLICATION_IDLE;
+FATFS fs;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -71,7 +72,8 @@ void MX_USB_HOST_Process(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-
+void loadFileListing();
+void mountVolume();
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -114,6 +116,8 @@ int main(void)
   uart_init();
 
   printf("Holi!\r\n");
+  ApplicationTypeDef localState = APPLICATION_IDLE;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -125,7 +129,28 @@ int main(void)
     MX_USB_HOST_Process();
 
   /* USER CODE BEGIN 3 */
-
+    if (localState != applicationState) {
+        switch (applicationState) {
+        case APPLICATION_IDLE:
+    		printf("Idle state\r\n");
+        	break;
+        case APPLICATION_START:
+    		printf("Start state\r\n");
+        	break;
+        case APPLICATION_READY:
+    		printf("Ready state\r\n");
+    		mountVolume();
+    		loadFileListing();
+        	break;
+        case APPLICATION_DISCONNECT:
+    		printf("Disconnect state\r\n");
+        	break;
+        default:
+    		printf("Unknown state\r\n");
+        	break;
+        }
+        localState = applicationState;
+    }
   }
   /* USER CODE END 3 */
 
@@ -191,23 +216,43 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 
 void MX_USB_HOST_StateChanged(ApplicationTypeDef appState) {
-	if (appState == APPLICATION_IDLE) {
-		printf("Idle state\r\n");
-	} else if (appState == APPLICATION_READY) {
-		printf("Ready state\r\n");
-	} else if (appState == APPLICATION_START) {
-		printf("Start state\r\n");
-	} else if (appState == APPLICATION_DISCONNECT) {
-		printf("Disconnected state\r\n");
-	} else {
-		printf("Unknown state\r\n");
-	}
+	applicationState = appState;
 }
 
 int _write (int fd, const void *buf, size_t count) {
 	// Write to UART Here
 	uart_write(buf, count);
 	return count;
+}
+void mountVolume() {
+	FRESULT res = f_mount(&fs, "0:/", 0);
+	if (res != FR_OK) {
+		printf("Error mounting filesystem %d\r\n", res);
+	}
+}
+
+void loadFileListing() {
+	DIR rootdir;
+	FILINFO finfo;
+    FRESULT res = FR_OK;
+
+	if ((res = f_opendir(&rootdir, "/")) != FR_OK) {
+		printf("Error opening root directory %d\r\n", res);
+		return;
+	}
+
+	while (f_readdir(&rootdir, &finfo) == FR_OK) {
+		if (finfo.fname[0] == '\0') break;
+		if (finfo.fname[0] == '.') continue;
+
+		if (finfo.fattrib & AM_DIR) {
+			printf("found directory %s\r\n", finfo.fname);
+		} else {
+			printf("found file %s\r\n", finfo.fname);
+		}
+	}
+	f_closedir(&rootdir);
+	printf("done reading rootdir\r\n");
 }
 
 /* USER CODE END 4 */
