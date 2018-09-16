@@ -54,8 +54,8 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
-#include "stm32f411e_discovery.h"
 #include "uart.h"
+#include "wav_player.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -143,6 +143,7 @@ int main(void)
     		loadFileListing();
         	break;
         case APPLICATION_DISCONNECT:
+        	stopWAVSong();
     		printf("Disconnect state\r\n");
         	break;
         default:
@@ -151,6 +152,8 @@ int main(void)
         }
         localState = applicationState;
     }
+
+	playWork();
   }
   /* USER CODE END 3 */
 
@@ -249,6 +252,13 @@ void loadFileListing() {
 			printf("found directory %s\r\n", finfo.fname);
 		} else {
 			printf("found file %s\r\n", finfo.fname);
+		}
+
+
+		if (strstr(finfo.fname, ".wav")) {
+			printf("found wav file! trying to play!\r\n");
+			playWAVSong(finfo.fname);
+			break;
 		}
 	}
 	f_closedir(&rootdir);

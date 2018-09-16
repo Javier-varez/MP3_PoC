@@ -36,7 +36,7 @@
 #include "stm32f4xx_it.h"
 
 /* USER CODE BEGIN 0 */
-
+extern I2S_HandleTypeDef                 hAudioOutI2s;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -83,6 +83,10 @@ void OTG_FS_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+
+void DMA1_Stream7_IRQHandler() {
+	HAL_DMA_IRQHandler(hAudioOutI2s.hdmatx);
+}
 
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
