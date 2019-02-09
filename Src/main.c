@@ -55,7 +55,7 @@
 
 /* USER CODE BEGIN Includes */
 #include "uart.h"
-#include "wav_player.h"
+#include "mp3_player.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -143,7 +143,7 @@ int main(void)
     		loadFileListing();
         	break;
         case APPLICATION_DISCONNECT:
-        	stopWAVSong();
+        	stopMP3Song();
     		printf("Disconnect state\r\n");
         	break;
         default:
@@ -153,7 +153,7 @@ int main(void)
         localState = applicationState;
     }
 
-	playWork();
+	playMP3Task();
   }
   /* USER CODE END 3 */
 
@@ -255,9 +255,9 @@ void loadFileListing() {
 		}
 
 
-		if (strstr(finfo.fname, ".wav")) {
-			printf("found wav file! trying to play!\r\n");
-			playWAVSong(finfo.fname);
+		if (strstr(finfo.fname, ".mp3")) {
+			printf("found mp3 file! trying to play!\r\n");
+			playMP3Song(finfo.fname);
 			break;
 		}
 	}
